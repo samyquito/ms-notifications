@@ -47,19 +47,23 @@ def sms():
         message = request.form['message']
         client = "aws"
         if(client == "aws"):
+            try:
             # Create an SNS client
-            client = boto3.client(
-                "sns",
-                aws_access_key_id=os.environ.get("aws_access_key_id"),
-                aws_secret_access_key=os.environ.get("aws_secret_access_key"),
-                region_name="us-east-1"
-            )
+                client = boto3.client(
+                    "sns",
+                    aws_access_key_id=os.environ.get("aws_access_key_id"),
+                    aws_secret_access_key=os.environ.get("aws_secret_access_key"),
+                    region_name="us-east-1"
+                )
 
-            # Send your sms message.
-            client.publish(
-                PhoneNumber=destination,
-                Message=message
-            )
+                # Send your sms message.
+                client.publish(
+                    PhoneNumber=destination,
+                    Message=message
+                )
+                return "OK", 200
+            except:
+                return "KO", 500
         else:
             try:
                 account_sid = os.environ.get("account_sid")
