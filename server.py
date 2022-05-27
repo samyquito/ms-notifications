@@ -82,5 +82,31 @@ def sms():
         return "hash_error", 401
 
 
+
+@app.route("/wpp", methods=['POST'])
+def wpp():
+    hash = request.form['hash_validator']
+    hash_validator=os.environ.get("hash_validator")
+    if(hash == hash_validator):
+        destination = request.form['destination']
+        message = request.form['message']
+        try:
+            whatsapp_from = os.environ.get("whatsapp_from")
+            account_sid = os.environ.get("account_sid")
+            auth_token = os.environ.get("auth_token")
+            client = Client(account_sid, auth_token)
+            message = client.messages.create(
+                from_=whatsapp_from,
+                body=message,
+                to='whatsapp:'+ destination
+            )
+            print(message.sid)
+            return "OK", 200
+        except:
+            return "KO", 500
+    else:
+        return "hash_error", 401
+
+
 if __name__ == '__main__':
     app.run()
