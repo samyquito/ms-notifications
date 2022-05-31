@@ -22,15 +22,18 @@ def email():
         to = request.form['destination']
         subject = request.form['subject']
         message = request.form['message']
-        SENDGRID_API_KEY = os.environ["SENDGRID_API_KEY"]
+        SENDGRID_API_KEY = os.environ.get("SENDGRID_API_KEY")
         message = Mail(
-            from_email=os.environ["SENDGRID_EMAIL_FROM"],
+            from_email=os.environ.get("SENDGRID_EMAIL_FROM"),
             to_emails=to,
             subject=subject,
             html_content=message)
         try:
-            sg = SendGridAPIClient(os.environ.get(SENDGRID_API_KEY))
+            sg = SendGridAPIClient(os.environ.get("SENDGRID_API_KEY"))
             response = sg.send(message)
+            print(response.status_code)
+            print(response.body)
+            print(response.headers)
         except Exception as e:
             print(e.message)
     else:
